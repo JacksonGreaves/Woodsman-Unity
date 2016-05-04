@@ -19,8 +19,8 @@ public class TreeGen : MonoBehaviour {
 	private int OCTAVES = 3;
 	
 	void Start() {
-		Unit treeUnit = new Unit((GameObject)Resources.Load("Tree"), new Vector3(10, 10), TREES_PER_UNIT);
-		Unit outsideTreeUnit = new Unit((GameObject)Resources.Load("Tree"), new Vector3(10, 10), 3);
+		Unit treeUnit = new Unit((GameObject)Resources.Load("Tree"), new Vector2(10, 10), TREES_PER_UNIT);
+		Unit outsideTreeUnit = new Unit((GameObject)Resources.Load("Tree"), new Vector2(10, 10), 3);
 
 		GameObject treeParent = new GameObject();
 		treeParent.name = "Tree Parent";
@@ -31,6 +31,7 @@ public class TreeGen : MonoBehaviour {
 		SpawnUnitInRange(outsideTreeUnit, new Vector2(0,-100), new Vector2(100,0), "TreeParent");
 		SpawnUnitInRange(outsideTreeUnit, new Vector2(0, 100), new Vector2(100, 200), "TreeParent");
 		SpawnUnitInRange(outsideTreeUnit, new Vector2(100,-100), new Vector2(200,200), "TreeParent");
+		gameObject.SetActive(false);
 	}
 
 	public void SpawnUnitInRange(Unit unit, Vector2 startPoint, Vector2 endPoint, string tag = "Untagged") {
@@ -57,11 +58,10 @@ public class TreeGen : MonoBehaviour {
 
 	private void GenerateTerrain() {
 		TerrainData tdata = new TerrainData();
-		tdata.size = new Vector3(300, 600, 300);
-
+		tdata.size = new Vector3(400, 600, 400);
 		GameObject terrainObj = Terrain.CreateTerrainGameObject(tdata);
-		terrainObj.transform.position = new Vector3(-100, 0, -100);
 
+		terrainObj.transform.position = new Vector3(-100, 0, -100);
 		terrain = terrainObj.GetComponent<Terrain>();
 
 		SEED = Random.Range(1, 65535);
@@ -93,9 +93,5 @@ public class TreeGen : MonoBehaviour {
 		}
 
 		return scattered;
-	}
-
-	void Update () {
-	
 	}
 }
