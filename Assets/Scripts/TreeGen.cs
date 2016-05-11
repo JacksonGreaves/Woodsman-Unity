@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using TerEdge;
 using LibNoise.Unity;
 using LibNoise.Unity.Generator;
@@ -17,7 +18,7 @@ public class TreeGen : MonoBehaviour {
 	private int LACUNARITY = 3;
 	private float PERSISTENCE = 0.5f;
 	private int OCTAVES = 3;
-	
+
 	void Start() {
 		Unit treeUnit = new Unit((GameObject)Resources.Load("Tree"), new Vector2(10, 10), TREES_PER_UNIT);
 		Unit outsideTreeUnit = new Unit((GameObject)Resources.Load("Tree"), new Vector2(10, 10), 3);
@@ -38,7 +39,11 @@ public class TreeGen : MonoBehaviour {
 		for (float xx = startPoint.x; xx < endPoint.x; xx += unit.getSize().x) {
 			
 			for (float yy = startPoint.y; yy < endPoint.y; yy += unit.getSize().y) {
-				
+				GameObject treeUnitParent = (GameObject) Instantiate(Resources.Load("UnitParent"));
+
+				treeUnitParent.name = "Unit_" + ((int)xx).ToString("000") + "_" + ((int)yy).ToString("000");
+				treeUnitParent.transform.position = new Vector3(xx, 0f, yy);
+
 				foreach (Vector2 pos in UnitScatter(unit, new Vector2(xx,yy))) {
 					
 					GameObject tree = (GameObject) Instantiate(unit.getObj(),
@@ -49,9 +54,12 @@ public class TreeGen : MonoBehaviour {
 					);
 
 					if (tag != "Untagged") {
-						tree.transform.parent = GameObject.FindGameObjectWithTag(tag).transform;
+						tree.transform.parent = treeUnitParent.transform;
 					}
+					treeUnitParent.GetComponent<UnitParent>().AddChild(tree);
 				}
+				treeUnitParent.GetComponent<UnitParent>().setSelected(true);
+				treeUnitParent.transform.parent = GameObject.FindGameObjectWithTag(tag).transform;
 			}
 		}
 	}

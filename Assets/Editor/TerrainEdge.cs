@@ -2639,7 +2639,7 @@ public class TerrainEdge : EditorWindow {
 	}
 	
 	void OnEnable(){
-		Debug.Log("TE:TerrainEdge has been re-activated (Settings automatically loaded from 'autosave.te3')");
+		//Debug.Log("TE:TerrainEdge has been re-activated (Settings automatically loaded from 'autosave.te3')");
 		if(Application.isPlaying==false){
 			SceneView.onSceneGUIDelegate = sceneEvents;
 			if(File.Exists(Application.dataPath+"/autosave.te3")){
@@ -2649,7 +2649,7 @@ public class TerrainEdge : EditorWindow {
 	}	
 	
 	void OnDisable(){
-		Debug.Log("TE:TerrainEdge has been disabled (Settings saved as 'autosave.te3')");
+		//Debug.Log("TE:TerrainEdge has been disabled (Settings saved as 'autosave.te3')");
 		TerrainEdge.saveConfig(Application.dataPath+"/autosave.te3",true);
 	}
 

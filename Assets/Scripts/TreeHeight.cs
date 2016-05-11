@@ -13,11 +13,6 @@ public class TreeHeight : MonoBehaviour {
 					branchChild.gameObject.isStatic = true;
 				}
 			}
-		}
-			
-	}
-	
-	void Update () {
-	
+		}			
 	}
 }
