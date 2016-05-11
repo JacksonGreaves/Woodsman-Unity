@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour {
 
 	public float rotx;
 
+	public Vector3 point;
 	private float speed;
 	private Rigidbody rb;
 
@@ -21,7 +22,13 @@ public class CameraController : MonoBehaviour {
 
 	private int lastDirection;
 
+	private float topLeftBarrier = 90f;
+	private float botLeftBarrier = -10f;
+	private float topRightBarrier = 90f;
+	private float botRightBarrier = -10f;
+
 	void Start () {
+		point = Vector3.zero;
 		StartCoroutine(LateStart());
 		speed = 0f;
 		zoomLevel = 0;
@@ -98,20 +105,28 @@ public class CameraController : MonoBehaviour {
 		if (transform.position.y < highestTerrainY) {
 			rb.velocity = Vector3.zero;
 		}
+
+		if (Input.GetMouseButton(0)) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast(ray, out hit, 1000f)) {
+				point = hit.point;
+			}
+		}
 	}
 
 	void LateUpdate() {
-		if (transform.position.x > 90f) {
-			transform.position = new Vector3(90f, transform.position.y, transform.position.z);
+		if (transform.position.x > topRightBarrier) {
+			transform.position = new Vector3(topRightBarrier, transform.position.y, transform.position.z);
 		}
-		if (transform.position.x < -20f) {
-			transform.position = new Vector3(-20f, transform.position.y, transform.position.z);
+		if (transform.position.x < botLeftBarrier) {
+			transform.position = new Vector3(botLeftBarrier, transform.position.y, transform.position.z);
 		}
-		if (transform.position.z > 90f) {
-			transform.position = new Vector3(transform.position.x, transform.position.y, 90f);
+		if (transform.position.z > topLeftBarrier) {
+			transform.position = new Vector3(transform.position.x, transform.position.y, topLeftBarrier);
 		}
-		if (transform.position.z < -20f) {
-			transform.position = new Vector3(transform.position.x, transform.position.y, -20f);
+		if (transform.position.z < botRightBarrier) {
+			transform.position = new Vector3(transform.position.x, transform.position.y, botRightBarrier);
 		}
 	}
 	private float GetTerrainHighestPoint() {

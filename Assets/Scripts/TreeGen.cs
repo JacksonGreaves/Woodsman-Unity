@@ -43,6 +43,7 @@ public class TreeGen : MonoBehaviour {
 
 				treeUnitParent.name = "Unit_" + ((int)xx).ToString("000") + "_" + ((int)yy).ToString("000");
 				treeUnitParent.transform.position = new Vector3(xx, 0f, yy);
+				treeUnitParent.GetComponent<UnitParent>().unit = unit;
 
 				foreach (Vector2 pos in UnitScatter(unit, new Vector2(xx,yy))) {
 					
@@ -56,9 +57,10 @@ public class TreeGen : MonoBehaviour {
 					if (tag != "Untagged") {
 						tree.transform.parent = treeUnitParent.transform;
 					}
+					//tree.layer = LayerMask.NameToLayer("Tree");
 					treeUnitParent.GetComponent<UnitParent>().AddChild(tree);
 				}
-				treeUnitParent.GetComponent<UnitParent>().setSelected(true);
+				//treeUnitParent.GetComponent<UnitParent>().setSelected(true);
 				treeUnitParent.transform.parent = GameObject.FindGameObjectWithTag(tag).transform;
 			}
 		}
