@@ -69,8 +69,14 @@ public class TreeGen : MonoBehaviour {
 	private void GenerateTerrain() {
 		TerrainData tdata = new TerrainData();
 		tdata.size = new Vector3(400, 600, 400);
-		GameObject terrainObj = Terrain.CreateTerrainGameObject(tdata);
 
+		SplatPrototype[] textures = new SplatPrototype[1];
+		textures[0] = new SplatPrototype();
+		textures[0].texture = (Texture2D) Resources.Load("grass");
+
+		tdata.splatPrototypes = textures;
+
+		GameObject terrainObj = Terrain.CreateTerrainGameObject(tdata);
 		terrainObj.transform.position = new Vector3(-100, 0, -100);
 		terrain = terrainObj.GetComponent<Terrain>();
 
@@ -78,6 +84,8 @@ public class TreeGen : MonoBehaviour {
 
 		ModuleBase mb = new Perlin(FREQ, LACUNARITY, PERSISTENCE, OCTAVES, SEED, QualityMode.High);
 		teFunc.generateHeightmap(terrainObj, mb, HEIGHT, ALPHA);
+
+		// TODO-W procedurally apply textures to terrain
 	}
 
 	private Vector2[] UnitScatter(Unit unit, Vector2 startPoint) {
