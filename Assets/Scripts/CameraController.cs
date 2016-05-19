@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
 
+	public LayerMask lm;
 	public float posx;
 	public float posy;
 	public float posz;
@@ -106,10 +107,10 @@ public class CameraController : MonoBehaviour {
 			rb.velocity = Vector3.zero;
 		}
 
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
 		if (Input.GetMouseButton(0)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, 1000f)) {
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, lm.value)) {
 				point = hit.point;
 			}
 		}

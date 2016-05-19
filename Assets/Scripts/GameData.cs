@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameData : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class GameData : MonoBehaviour {
 
 	void Start () {
 		selectedParents = new List<UnitParent>();
+		StartCoroutine(DayCounter());
 	}
 
 	public void AddParentToSelected(UnitParent parent) {
@@ -39,6 +41,14 @@ public class GameData : MonoBehaviour {
 			UnitParent up = selectedParents[0];
 			RemoveParentFromSelected(up);
 			up.killSelectedTrees(treeGrowbackWaitTime, treeGrowbackSpeed/100);
+		}
+	}
+
+	private IEnumerator DayCounter() {
+		while (true) {
+			yield return new WaitForSeconds(10f);
+			var t = GameObject.Find("DayCount").GetComponent<Text>();
+			t.text = (int.Parse(t.text) + 1).ToString();
 		}
 	}
 }

@@ -12,37 +12,43 @@ public class UnitParent : MonoBehaviour {
 
 	private bool canBeSelected;
 
+	private Material matMain;
+	private Material matSelected;
+	private Material matTMain;
+	private Material matTSelected;
+	private Material matGrowing;
+
 	void Start () {
 		isSelected = false;
 		canBeSelected = true;
 		data = GameObject.Find("GameHandler").GetComponent<GameData>();
+
+		matMain = (Material)Resources.Load("Tree-Main");
+		matSelected = (Material)Resources.Load("Tree-Selected");
+		matTMain = (Material)Resources.Load("Tree-TrunkMain");
+		matTSelected = (Material)Resources.Load("Tree-TrunkSelected");
+		matGrowing = (Material)Resources.Load("Tree-Growing");
 	}
 
 	public void setSelected(bool b) {
 		isSelected = b;
-		Material main = (Material)Resources.Load("Tree-Main");
-		Material selected = (Material)Resources.Load("Tree-Selected");
-		Material tMain = (Material)Resources.Load("Tree-TrunkMain");
-		Material tSelected = (Material)Resources.Load("Tree-TrunkSelected");
 
+		if (isSelected) {
+			changeMaterials(matSelected, matTSelected);
+		} else {
+			changeMaterials(matMain, matTMain);
+		}
+	}
+
+	private void changeMaterials(Material branchMaterial, Material trunkMaterial) {
 		foreach (GameObject go in this.children) {
 			foreach (Transform child in go.transform) {
 				if (child.name == "Branches") {
 					foreach (Transform branchChild in child) {
-						// Branches
-						if (isSelected) {
-							branchChild.gameObject.GetComponent<Renderer>().sharedMaterial = selected;
-						} else {
-							branchChild.gameObject.GetComponent<Renderer>().sharedMaterial = main;
-						}
+						branchChild.gameObject.GetComponent<Renderer>().sharedMaterial = branchMaterial;
 					}
 				} else {
-					// Trunk
-					if (isSelected) {
-						child.gameObject.GetComponent<Renderer>().sharedMaterial = tSelected;
-					} else {
-						child.gameObject.GetComponent<Renderer>().sharedMaterial = tMain;
-					}
+					child.gameObject.GetComponent<Renderer>().sharedMaterial = trunkMaterial;
 				}
 			}
 		}
@@ -89,6 +95,7 @@ public class UnitParent : MonoBehaviour {
 		foreach (GameObject go in children) {
 			go.isStatic = false;
 			go.transform.localScale = Vector3.zero;
+			changeMaterials(matGrowing, matGrowing);
 		}
 		yield return new WaitForSeconds(wait);
 		float scale = 0f;
@@ -103,5 +110,6 @@ public class UnitParent : MonoBehaviour {
 			go.isStatic = true;
 		}
 		canBeSelected = true;
+		setSelected(false);
 	}
 }

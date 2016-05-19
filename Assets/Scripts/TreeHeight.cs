@@ -8,11 +8,11 @@ public class TreeHeight : MonoBehaviour {
 		gameObject.isStatic = true;
 		foreach (Transform child in transform) {
 			child.gameObject.isStatic = true;
-			child.gameObject.layer = LayerMask.NameToLayer("Tree");
+			child.gameObject.layer = LayerMask.NameToLayer("IgnoreGrid");
 			if (child.name == "Branches") {
 				foreach (Transform branchChild in child) {
 					branchChild.gameObject.isStatic = true;
-					branchChild.gameObject.layer = LayerMask.NameToLayer("Tree");
+					branchChild.gameObject.layer = LayerMask.NameToLayer("IgnoreGrid");
 				}
 			}
 		}			

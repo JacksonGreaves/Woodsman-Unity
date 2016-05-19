@@ -32,6 +32,11 @@ public class TreeGen : MonoBehaviour {
 		SpawnUnitInRange(outsideTreeUnit, new Vector2(0,-100), new Vector2(100,0), "TreeParent");
 		SpawnUnitInRange(outsideTreeUnit, new Vector2(0, 100), new Vector2(100, 200), "TreeParent");
 		SpawnUnitInRange(outsideTreeUnit, new Vector2(100,-100), new Vector2(200,200), "TreeParent");
+
+		Instantiate(Resources.Load("Cloud"));
+		Instantiate(Resources.Load("Cloud"));
+		Instantiate(Resources.Load("Cloud"));
+
 		gameObject.SetActive(false);
 	}
 
