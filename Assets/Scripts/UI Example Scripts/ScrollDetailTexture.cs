@@ -54,7 +54,7 @@ public class ScrollDetailTexture : MonoBehaviour
 			{
 				mat.SetTextureOffset("_DetailTex", scrollPerSecond * Time.time);
 
-				// TODO: It would be better to add support for MaterialBlocks on UIRenderer,
+				// todo: It would be better to add support for MaterialBlocks on UIRenderer,
 				// because currently only one Update() function's matrix can be active at a time.
 				// With material block properties, the batching would be correctly broken up instead,
 				// and would work with multiple widgets using this detail shader.

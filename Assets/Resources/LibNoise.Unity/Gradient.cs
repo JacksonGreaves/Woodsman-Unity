@@ -187,7 +187,7 @@ namespace LibNoise.Unity
         /// </summary>
         public void Invert()
         {
-            // UNDONE: public void Invert()
+            // undone: public void Invert()
             throw new NotImplementedException();
         }
 

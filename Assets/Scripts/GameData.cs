@@ -6,11 +6,15 @@ using UnityEngine.UI;
 public class GameData : MonoBehaviour {
 
 	private List<UnitParent> selectedParents;
+	private float woodCutCount;
+	private int money;
 
 	public float treeGrowbackWaitTime;
 	public float treeGrowbackSpeed;
 
 	void Start () {
+		woodCutCount = 0;
+		money = 0;
 		selectedParents = new List<UnitParent>();
 		StartCoroutine(DayCounter());
 	}
@@ -21,6 +25,24 @@ public class GameData : MonoBehaviour {
 
 	public void RemoveParentFromSelected(UnitParent parent) {
 		selectedParents.Remove(parent);
+	}
+
+	public void AddToWoodCount(int count) {
+		woodCutCount += count;
+		UpdateWoodCount();
+	}
+
+	public void AddMoney(int muns) {
+		money += muns;
+	}
+
+	public void ResetWoodCount() {
+		woodCutCount = 0;
+		UpdateWoodCount();
+	}
+
+	public void ResetMoney() {
+		money = 0;
 	}
 
 	public UnitParent[] GetSelectedParentsAsArray() {
@@ -37,10 +59,29 @@ public class GameData : MonoBehaviour {
 
 	public void killSelectedTrees() {
 		int c = selectedParents.Count;
+		int wood = 0;
 		for (int i = 0; i < c; i++) {
 			UnitParent up = selectedParents[0];
 			RemoveParentFromSelected(up);
 			up.killSelectedTrees(treeGrowbackWaitTime, treeGrowbackSpeed/100);
+			wood += 1;
+		}
+		AddToWoodCount(wood);
+	}
+
+	public void HalfTest() {
+		woodCutCount += 0.5f;
+		UpdateWoodCount();
+	}
+
+	private void UpdateWoodCount() {
+		var t = GameObject.Find("WoodCount").GetComponent<Text>();
+		if (woodCutCount % 10 == 0) {
+			// Int (whole wood)
+			t.text = ((int)woodCutCount).ToString();
+		} else {
+			// Float (half wood)
+			t.text = woodCutCount.ToString();
 		}
 	}
 

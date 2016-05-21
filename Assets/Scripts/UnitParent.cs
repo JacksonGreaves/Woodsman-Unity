@@ -8,8 +8,6 @@ public class UnitParent : MonoBehaviour {
 	private bool isSelected;
 	public Unit unit;
 
-	private GameData data;
-
 	private bool canBeSelected;
 
 	private Material matMain;
@@ -18,10 +16,12 @@ public class UnitParent : MonoBehaviour {
 	private Material matTSelected;
 	private Material matGrowing;
 
+	private GameData data;
+
 	void Start () {
+		data = GameObject.Find("GameHandler").GetComponent<GameData>();
 		isSelected = false;
 		canBeSelected = true;
-		data = GameObject.Find("GameHandler").GetComponent<GameData>();
 
 		matMain = (Material)Resources.Load("Tree-Main");
 		matSelected = (Material)Resources.Load("Tree-Selected");
@@ -38,6 +38,10 @@ public class UnitParent : MonoBehaviour {
 		} else {
 			changeMaterials(matMain, matTMain);
 		}
+	}
+
+	public bool getSelected() {
+		return isSelected;
 	}
 
 	private void changeMaterials(Material branchMaterial, Material trunkMaterial) {
@@ -79,6 +83,7 @@ public class UnitParent : MonoBehaviour {
 					if (camx >= 0f && camx < 100f && camy >= 0f && camy < 100f && !isSelected) {
 						setSelected(true);
 						data.AddParentToSelected(GetComponent<UnitParent>());
+
 					}
 				} else {
 					if (!Input.GetKey(KeyCode.LeftShift) && isSelected) {

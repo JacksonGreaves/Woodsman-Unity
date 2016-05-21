@@ -7,11 +7,10 @@ public class CameraController : MonoBehaviour {
 	public float posx;
 	public float posy;
 	public float posz;
-
 	public float rotx;
 
 	public Vector3 point;
-	private float speed;
+
 	private Rigidbody rb;
 
 	private float camSpdLow = 	15f;
@@ -31,7 +30,6 @@ public class CameraController : MonoBehaviour {
 	void Start () {
 		point = Vector3.zero;
 		StartCoroutine(LateStart());
-		speed = 0f;
 		zoomLevel = 0;
 		rb = GetComponent<Rigidbody>();
 	}
@@ -130,6 +128,7 @@ public class CameraController : MonoBehaviour {
 			transform.position = new Vector3(transform.position.x, transform.position.y, botRightBarrier);
 		}
 	}
+
 	private float GetTerrainHighestPoint() {
 		float highestPoint = 0;
 		var t = Terrain.activeTerrain;

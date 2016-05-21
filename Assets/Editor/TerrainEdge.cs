@@ -168,13 +168,15 @@ public class TEDetail : TEGroup
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Selected"))
             {
-				Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Apply detail to selected terrain.");
+				Undo.RecordObject(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Apply detail to selected terrain.");
+				//Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Apply detail to selected terrain.");
                 Generate(TerrainEdge.selectedObject);
             }
             if (GUILayout.Button("Full Scene"))
             {
                 Terrain[] terrs = FindObjectsOfType(typeof(Terrain)) as Terrain[];
-				Undo.RegisterUndo(terrs,"te:Apply detail to all terrains");
+				Undo.RecordObjects(terrs,"te:Apply detail to all terrains");
+				//Undo.RegisterUndo(terrs,"te:Apply detail to all terrains");
                 int terrIndex = 0;
                 foreach (Terrain terr in terrs)
                 {
@@ -404,7 +406,8 @@ public class TEFoliageGroup : TEGroup
 			if(Physics.Raycast(ray, out hit, 7000.0f)){
 				GameObject go = hit.collider.gameObject;
 				TerrainData td = go.GetComponent<Terrain>().terrainData;
-				Undo.RegisterUndo(td,"Paste Foliage");
+				Undo.RecordObject(td,"Paste Foliage");
+				//Undo.RegisterUndo(td,"Paste Foliage");
 				// Need to make alpha and detail res maps 3x size so that we can manage neighbourhood but we'll do that in 2.68! 
 				int x = (int)hit.point.x - (int)go.transform.position.x;
 				int z = (int)hit.point.z - (int)go.transform.position.z;
@@ -948,7 +951,8 @@ public class TENoiseLab : TEGroup
 			if(Physics.Raycast(ray, out hit, 7000.0f)){
 				GameObject go = hit.collider.gameObject;
 				TerrainData td = go.GetComponent<Terrain>().terrainData;
-				Undo.RegisterUndo(td,"Paste Noise");
+				Undo.RecordObject(td,"Paste Noise");
+				//Undo.RegisterUndo(td,"Paste Noise");
 				int x = (int)hit.point.x - (int)go.transform.position.x;
 				int z = (int)hit.point.z - (int)go.transform.position.z;
 				int heightres = td.heightmapResolution;
@@ -1201,7 +1205,8 @@ public class TENoiseLab : TEGroup
             {
                 if (GUILayout.Button("Selected"))
                 {
-					Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
+					Undo.RecordObject(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
+					//Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
                     Generate(TerrainEdge.selectedObject);
                 }
             }
@@ -1215,7 +1220,8 @@ public class TENoiseLab : TEGroup
             {
                 if (EditorUtility.DisplayDialog("Generate Full Scene", "Replace ALL terrain heightmaps in your scene?", "Ok"))
                 {
-					Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Heightmaps"); 
+					Undo.RecordObjects(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Heightmaps"); 
+					//Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Heightmaps"); 
                     Terrain[] terrs = FindObjectsOfType(typeof(Terrain)) as Terrain[];
                     int terrIndex = 0;
                     foreach (Terrain terr in terrs)
@@ -1423,7 +1429,8 @@ public class TETextures : TEGroup
 	                GUILayout.BeginHorizontal();
 	                if (GUILayout.Button("Selected"))
 	                {
-						Undo.RegisterUndo(Selection.activeGameObject.GetComponent<Terrain>().terrainData,"te:Generate Splatmap For Selected Terrain");
+						Undo.RecordObject(Selection.activeGameObject.GetComponent<Terrain>().terrainData,"te:Generate Splatmap For Selected Terrain");
+						//Undo.RegisterUndo(Selection.activeGameObject.GetComponent<Terrain>().terrainData,"te:Generate Splatmap For Selected Terrain");
 	                    Generate(Selection.activeGameObject);
 	                }
 	                if (GUILayout.Button("Full Scene"))
@@ -1909,7 +1916,8 @@ public class TETools : TEGroup
 					if(confirmMsg==""){
 						EditorUtility.DisplayDialog("Resolutions already match","The resolutions you have specified are already identical to the current terrain and so no action has been taken.","Okay");
 					} else {
-						Undo.RegisterUndo(terdat,"te: Adjust Terrain Resolution");
+						Undo.RecordObject(terdat,"te: Adjust Terrain Resolution");
+						//Undo.RegisterUndo(terdat,"te: Adjust Terrain Resolution");
 						teFunc.reRes(TerrainEdge.selectedObject,(int)Mathf.Pow(2.0f,(float)teToolsResSettings[0]),1+(int)Mathf.Pow(2.0f,(float)teToolsResSettings[1]),(int)Mathf.Pow(2.0f,(float)teToolsResSettings[2]));
 					}
 				}
@@ -1974,7 +1982,8 @@ public class TETools : TEGroup
 	        {
 	            if (GUILayout.Button("Selected"))
 	            {
-					Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Join Selected To Neighbors"); 
+					Undo.RecordObjects(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Join Selected To Neighbors"); 
+					//Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Join Selected To Neighbors"); 
 	                EditorUtility.DisplayProgressBar("Blending Terrain", "Blending " + TerrainEdge.selectedObject.name + "..", 0.5f);
 	                fixSeams(TerrainEdge.selectedObject);
 	                EditorUtility.ClearProgressBar();
@@ -1988,7 +1997,8 @@ public class TETools : TEGroup
 	        }
 	        if (GUILayout.Button("Full Scene"))
 	        {
-	   			Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Terrain Trees"); 
+				Undo.RecordObjects(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Terrain Trees"); 
+				//Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Terrain Trees"); 
 	            Terrain[] terrs = FindObjectsOfType(typeof(Terrain)) as Terrain[];
 	            int terrIndex = 0;
 	            foreach (Terrain terr in terrs)
@@ -2134,7 +2144,8 @@ public class TETools : TEGroup
 	
 	void doSlope(GameObject go,Vector2 slopeStart, Vector2 slopeEnd){
 		TerrainData tdat = go.GetComponent<Terrain>().terrainData;
-		Undo.RegisterUndo(tdat,"Create Slope");
+		Undo.RecordObject(tdat,"Create Slope");
+		//Undo.RegisterUndo(tdat,"Create Slope");
 		int res = tdat.heightmapResolution;
 		heights = tdat.GetHeights(0,0,res,res);
 		float mult = (1.0f / tdat.size.x) * (float)res;
@@ -2189,7 +2200,8 @@ public class TETools : TEGroup
 		// Have used Terrain Toolkit's source as reference for the math/algorithms in this function.
 		// As such, Sandor Moldan of 6x0 really deserves the credit for it.
 		TerrainData terdata = go.GetComponent<Terrain>().terrainData;
-		Undo.RegisterUndo(terdata,"Apply Thermal Erosion");				
+		Undo.RecordObject(terdata,"Apply Thermal Erosion");				
+		//Undo.RegisterUndo(terdata,"Apply Thermal Erosion");				
 		int res = terdata.heightmapResolution;
 		int terWidth = terdata.heightmapWidth; 
 		int terHeight = terdata.heightmapHeight;
@@ -2385,11 +2397,13 @@ public class TETools : TEGroup
 			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button("Selected")){
-				Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate Trees");
+				Undo.RecordObject(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate Trees");
+				//Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate Trees");
 				Generate(TerrainEdge.selectedObject);
 			}
 			if(GUILayout.Button("Full Scene")){
-				Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Terrain Trees"); 
+				Undo.RecordObjects(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Terrain Trees"); 
+				//Undo.RegisterUndo(FindObjectsOfType(typeof(Terrain)) as Terrain[],"te:Generate All Terrain Trees"); 
 				Terrain[] terrs = FindObjectsOfType(typeof(Terrain)) as Terrain[];
 				int terrIndex = 0;
 				foreach (Terrain terr in terrs) {

@@ -3,12 +3,10 @@ using System.Collections;
 
 public class GameEvents : MonoBehaviour {
 
-	// Use this for initialization
 	void Start () {
 	
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}

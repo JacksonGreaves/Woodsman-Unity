@@ -27,7 +27,8 @@ namespace TerEdge
 					}
 					if(filepath.Length>1){
 						byte[] bytes = File.ReadAllBytes(filepath);
-						Undo.RegisterUndo(terdata,"Import Heightmap");
+						Undo.RecordObject(terdata,"Import Heightmap");
+						//Undo.RegisterUndo(terdata,"Import Heightmap");
 						terdata.SetHeights(0,0,TerEdge.teFunc.bytesToDimFloat(bytes,false));
 					}
 				} else if (fileFormat==1){
@@ -36,7 +37,8 @@ namespace TerEdge
 					}
 					if(filepath.Length>1){
 						byte[] bytes = File.ReadAllBytes(filepath);
-						Undo.RegisterUndo(terdata,"Import Heightmap");
+						Undo.RecordObject(terdata,"Import Heightmap");
+						//Undo.RegisterUndo(terdata,"Import Heightmap");
 						terdata.SetHeights(0,0,TerEdge.teFunc.bytesToDimFloat(bytes,true));
 					}
 				}

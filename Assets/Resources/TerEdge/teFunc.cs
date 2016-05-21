@@ -524,7 +524,7 @@ namespace TerEdge
 	        terrainData2Splat.RefreshPrototypes();
 	        terrainData2Splat.SetAlphamaps (0, 0, alphadatadest);
 			AssetDatabase.SaveAssets();
-			go.active = false;
+			go.SetActive(false);
 		}	
 	
 		public static bool isTerrain(GameObject go){
@@ -585,8 +585,9 @@ namespace TerEdge
 		public static void experiment001(){
 			GameObject go = Selection.activeGameObject;
 			TerrainData terdata = go.GetComponent<Terrain>().terrainData;
-			float[,] heights = terdata.GetHeights(0,0,terdata.heightmapResolution,terdata.heightmapResolution);	
-			Undo.RegisterUndo(terdata,"Experiment001");	
+			float[,] heights = terdata.GetHeights(0,0,terdata.heightmapResolution,terdata.heightmapResolution);
+			Undo.RecordObject(terdata, "Experiment001");
+			//Undo.RegisterUndo(terdata,"Experiment001");	
 			float[] flowTexParams = new float[4]{20f,0.004f,0.004f,1.0f};
 			//float[,] flows = new float[terdata.heightmapResolution,terdata.heightmapResolution];
 			
