@@ -112,7 +112,7 @@ public class GameData : MonoBehaviour {
 			GameObject.Find("DayCount").GetComponent<Text>().text = days.ToString();
 			GameObject.Find("DayLeftCount").GetComponent<Text>().text = daysLeft.ToString();
 			GameObject.Find("WoodQuotaCount").GetComponent<Text>().text = currentQuota.ToString();
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(10f);
 			days += 1;
 			daysLeft = 30 - (days%30);
 			if (daysLeft == 30) {
