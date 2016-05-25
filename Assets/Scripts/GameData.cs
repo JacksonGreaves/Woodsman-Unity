@@ -8,13 +8,25 @@ public class GameData : MonoBehaviour {
 	private List<UnitParent> selectedParents;
 	private float woodCutCount;
 	private int money;
+	private int days;
+	private int daysLeft;
+	private int currentQuota;
+	private List<int> quotas = new List<int> {	250, 300, 350, 400, 500,
+												600, 700, 800, 900, 1000,
+												1100, 1200, 1300, 1350, 1450,
+												1550, 1600, 1700, 1750, 1800,
+												1900, 2000, 2200, 2300, 2400,
+												2450, 2500	};
 
 	public float treeGrowbackWaitTime;
 	public float treeGrowbackSpeed;
 
 	void Start () {
+		currentQuota = quotas[0];
 		woodCutCount = 0;
 		money = 0;
+		days = 0;
+		daysLeft = 30;
 		selectedParents = new List<UnitParent>();
 		StartCoroutine(DayCounter());
 	}
@@ -27,7 +39,7 @@ public class GameData : MonoBehaviour {
 		selectedParents.Remove(parent);
 	}
 
-	public void AddToWoodCount(int count) {
+	public void AddToWoodCount(float count) {
 		woodCutCount += count;
 		UpdateWoodCount();
 	}
@@ -59,18 +71,18 @@ public class GameData : MonoBehaviour {
 
 	public void killSelectedTrees() {
 		int c = selectedParents.Count;
-		int wood = 0;
+		float wood = 0f;
 		for (int i = 0; i < c; i++) {
 			UnitParent up = selectedParents[0];
 			RemoveParentFromSelected(up);
 			up.killSelectedTrees(treeGrowbackWaitTime, treeGrowbackSpeed/100);
-			wood += 1;
+			wood += 10f;
 		}
 		AddToWoodCount(wood);
 	}
 
 	public void HalfTest() {
-		woodCutCount += 0.5f;
+		woodCutCount += 5f;
 		UpdateWoodCount();
 	}
 
@@ -85,11 +97,27 @@ public class GameData : MonoBehaviour {
 		}
 	}
 
+	private void triggerQuota() {
+		woodCutCount -= currentQuota;
+		var i = quotas.IndexOf(currentQuota)+1;
+		if (i >= quotas.Count)
+			i -= 1;
+		currentQuota = quotas[i];
+		UpdateWoodCount();
+		GameObject.Find("WoodQuotaCount").GetComponent<Text>().text = currentQuota.ToString();
+	}
+
 	private IEnumerator DayCounter() {
 		while (true) {
-			yield return new WaitForSeconds(10f);
-			var t = GameObject.Find("DayCount").GetComponent<Text>();
-			t.text = (int.Parse(t.text) + 1).ToString();
+			GameObject.Find("DayCount").GetComponent<Text>().text = days.ToString();
+			GameObject.Find("DayLeftCount").GetComponent<Text>().text = daysLeft.ToString();
+			GameObject.Find("WoodQuotaCount").GetComponent<Text>().text = currentQuota.ToString();
+			yield return new WaitForSeconds(0.1f);
+			days += 1;
+			daysLeft = 30 - (days%30);
+			if (daysLeft == 30) {
+				triggerQuota();
+			}
 		}
 	}
 }

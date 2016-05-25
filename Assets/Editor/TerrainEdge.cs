@@ -1205,8 +1205,8 @@ public class TENoiseLab : TEGroup
             {
                 if (GUILayout.Button("Selected"))
                 {
-					Undo.RecordObject(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
-					//Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
+					//Undo.RecordObject(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
+					Undo.RegisterUndo(TerrainEdge.selectedObject.GetComponent<Terrain>().terrainData,"te:Generate All Heightmaps"); 
                     Generate(TerrainEdge.selectedObject);
                 }
             }
