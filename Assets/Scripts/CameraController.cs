@@ -70,6 +70,8 @@ public class CameraController : MonoBehaviour {
 			rb.angularVelocity = Vector3.zero;
 		}
 
+		/**
+		 * !! ZOOM CODE: UN-COMMENT TO RE-ENABLE !!
 		if (Input.GetKeyDown(KeyCode.E)) {
 			if (zoomLevel <= 3) {
 				zoomLevel += 1;
@@ -86,6 +88,7 @@ public class CameraController : MonoBehaviour {
 				lastDirection = -1;
 			}
 		}
+		*/
 
 		if (lastDirection == 1) {
 			if (transform.position.y > highestTerrainY + (20 - zoomLevel*2.5)) {
