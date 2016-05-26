@@ -8,7 +8,9 @@ public class UnitParent : MonoBehaviour {
 	private bool isSelected;
 	public Unit unit;
 
+
 	private bool canBeSelected;
+	private bool areTreesSick;
 
 	private Material matMain;
 	private Material matSelected;
@@ -18,10 +20,14 @@ public class UnitParent : MonoBehaviour {
 
 	private GameData data;
 
+	private float growbackFactor;
+
 	void Start () {
 		data = GameObject.Find("GameHandler").GetComponent<GameData>();
 		isSelected = false;
 		canBeSelected = true;
+		growbackFactor = 1f;
+		areTreesSick = false;
 
 		matMain = (Material)Resources.Load("Tree-Main");
 		matSelected = (Material)Resources.Load("Tree-Selected");

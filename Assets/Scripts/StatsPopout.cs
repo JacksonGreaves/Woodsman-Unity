@@ -14,7 +14,7 @@ public class StatsPopout : MonoBehaviour {
 	private float handleAlpha;
 
 	void Start () {
-		handleAlpha = 255f; // No opacity
+		handleAlpha = 1f; // No opacity
 		isMouseOver = false;
 		posStart = parent.transform.localPosition.x;
 	}

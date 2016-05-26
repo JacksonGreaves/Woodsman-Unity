@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameData : MonoBehaviour {
 
 	private List<UnitParent> selectedParents;
-	private float woodCutCount;
+	private int woodCutCount;
 	private int money;
 	private int days;
 	private int daysLeft;
@@ -24,11 +24,13 @@ public class GameData : MonoBehaviour {
 	void Start () {
 		currentQuota = quotas[0];
 		woodCutCount = 0;
-		money = 0;
+		money = 3000;
 		days = 0;
 		daysLeft = 30;
 		selectedParents = new List<UnitParent>();
 		StartCoroutine(DayCounter());
+		UpdateWoodCount();
+		UpdateMoneyCount();
 	}
 
 	public void AddParentToSelected(UnitParent parent) {
@@ -39,13 +41,14 @@ public class GameData : MonoBehaviour {
 		selectedParents.Remove(parent);
 	}
 
-	public void AddToWoodCount(float count) {
+	public void AddToWoodCount(int count) {
 		woodCutCount += count;
 		UpdateWoodCount();
 	}
 
 	public void AddMoney(int muns) {
 		money += muns;
+		UpdateMoneyCount();
 	}
 
 	public void ResetWoodCount() {
@@ -55,6 +58,7 @@ public class GameData : MonoBehaviour {
 
 	public void ResetMoney() {
 		money = 0;
+		UpdateMoneyCount();
 	}
 
 	public UnitParent[] GetSelectedParentsAsArray() {
@@ -71,30 +75,33 @@ public class GameData : MonoBehaviour {
 
 	public void killSelectedTrees() {
 		int c = selectedParents.Count;
-		float wood = 0f;
+		int wood = 0;
+		int muns = 0;
 		for (int i = 0; i < c; i++) {
 			UnitParent up = selectedParents[0];
 			RemoveParentFromSelected(up);
 			up.killSelectedTrees(treeGrowbackWaitTime, treeGrowbackSpeed/100);
-			wood += 10f;
+			wood += 10;
+			muns += 50;
 		}
+
 		AddToWoodCount(wood);
+		AddMoney(muns);
 	}
 
 	public void HalfTest() {
-		woodCutCount += 5f;
+		woodCutCount += 5;
 		UpdateWoodCount();
 	}
 
 	private void UpdateWoodCount() {
 		var t = GameObject.Find("WoodCount").GetComponent<Text>();
-		if (woodCutCount % 10 == 0) {
-			// Int (whole wood)
-			t.text = ((int)woodCutCount).ToString();
-		} else {
-			// Float (half wood)
-			t.text = woodCutCount.ToString();
-		}
+		t.text = woodCutCount.ToString();
+	}
+
+	private void UpdateMoneyCount() {
+		Text t = GameObject.Find("MoneyCount").GetComponent<Text>();
+		t.text = money.ToString();
 	}
 
 	private void triggerQuota() {
