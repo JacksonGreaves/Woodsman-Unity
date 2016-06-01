@@ -181,7 +181,8 @@ public class GameGeneration : MonoBehaviour {
 				// RULE 3: Texture 2 is stronger on flatter terrain
 				// Steepness is unbounded; we normalize it by dividing the extend
 				// of heightmap height and scale factor. We subtract result from
-				// 1.0 to give greater flatness weighting
+				// 2.0 to give greater flatness weighting and multiply by pos y normal
+				// to give more influence.
 				weights[2] = (2f - Mathf.Clamp01(steepness*steepness/(tdata.heightmapHeight/4.0f))) * (2f * Mathf.Clamp01(normal.y));
 
 				float z = 0f;

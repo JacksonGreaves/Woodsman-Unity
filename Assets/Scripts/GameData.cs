@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameData : MonoBehaviour {
 
 	private List<UnitParent> selectedParents;
+	private CutSelectionPopout cutPopout;
 	private int woodCutCount;
 	private int money;
 	private int days;
@@ -28,6 +29,7 @@ public class GameData : MonoBehaviour {
 		days = 0;
 		daysLeft = 30;
 		selectedParents = new List<UnitParent>();
+		cutPopout = GameObject.Find("CutSelection").GetComponent<CutSelectionPopout>();
 		StartCoroutine(DayCounter());
 		UpdateWoodCount();
 		UpdateMoneyCount();
@@ -35,10 +37,21 @@ public class GameData : MonoBehaviour {
 
 	public void AddParentToSelected(UnitParent parent) {
 		selectedParents.Add(parent);
+		UpdateCutButton();
 	}
 
 	public void RemoveParentFromSelected(UnitParent parent) {
 		selectedParents.Remove(parent);
+	}
+
+	public void ResetSelectedParents() {
+		int c = selectedParents.Count;
+		for (int i = 0; i < c; i++) {
+			UnitParent up = selectedParents[0];
+			RemoveParentFromSelected(up);
+			up.setSelected(false);
+		}
+		UpdateCutButton();
 	}
 
 	public void AddToWoodCount(int count) {
@@ -92,6 +105,14 @@ public class GameData : MonoBehaviour {
 	public void HalfTest() {
 		woodCutCount += 5;
 		UpdateWoodCount();
+	}
+
+	private void UpdateCutButton() {
+		if (selectedParents.Count > 0) {
+			cutPopout.SetSelected(true);
+		} else {
+			cutPopout.SetSelected(false);
+		}
 	}
 
 	private void UpdateWoodCount() {

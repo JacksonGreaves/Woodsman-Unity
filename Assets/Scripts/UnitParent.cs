@@ -89,7 +89,6 @@ public class UnitParent : MonoBehaviour {
 					if (camx >= 0f && camx < 100f && camy >= 0f && camy < 100f && !isSelected) {
 						setSelected(true);
 						data.AddParentToSelected(GetComponent<UnitParent>());
-
 					}
 				} else {
 					if (!Input.GetKey(KeyCode.LeftShift) && isSelected) {
