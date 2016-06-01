@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class CutSelectionButtonsPopout : MonoBehaviour {
@@ -32,7 +33,8 @@ public class CutSelectionButtonsPopout : MonoBehaviour {
 
 	private IEnumerator ShowCoroutine() {
 		StopCoroutine(HideCoroutine());
-		while (gameObject.transform.localPosition.y > popoutY + 0.05 && isPoppedOut) {
+		//GameObject.Find("CutSelectionMask").GetComponent<Image>().raycastTarget = true;
+		while (gameObject.transform.localPosition.y > popoutY + 0.05f && isPoppedOut) {
 			float y = Mathf.Lerp(gameObject.transform.localPosition.y, popoutY, 0.2f);
 			gameObject.transform.localPosition = new Vector3(gameObject.transform.localPosition.x,
 				y, gameObject.transform.localPosition.z);
@@ -43,7 +45,8 @@ public class CutSelectionButtonsPopout : MonoBehaviour {
 
 	private IEnumerator HideCoroutine() {
 		StopCoroutine(ShowCoroutine());
-		while (gameObject.transform.localPosition.y < startingPos.y - 0.05 && !isPoppedOut) {
+		//GameObject.Find("CutSelectionMask").GetComponent<Image>().raycastTarget = false;
+		while (gameObject.transform.localPosition.y < startingPos.y - 0.05f && !isPoppedOut) {
 			float y = Mathf.Lerp(gameObject.transform.localPosition.y, startingPos.y, 0.2f);
 			gameObject.transform.localPosition = new Vector3(gameObject.transform.localPosition.x,
 				y, gameObject.transform.localPosition.z);

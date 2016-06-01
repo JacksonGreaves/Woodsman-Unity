@@ -59,10 +59,10 @@ public class StatsPopout : MonoBehaviour {
 	private IEnumerator EnterCoroutine() {
 		// Ensure the opposite routine isn't running
 		StopCoroutine(ExitCoroutine());
-		while (parent.transform.localPosition.x < -0.05f && isMouseOver) {
+		while (parent.transform.localPosition.x < 5-0.05f && isMouseOver) {
 			// Loop stops when end position is close to 0 or if mouse leaves
 			// Position is smoothed (interpolated) for effect
-			float x = Mathf.Lerp(parent.transform.localPosition.x, 0f, 0.2f);
+			float x = Mathf.Lerp(parent.transform.localPosition.x, 5f, 0.2f);
 			parent.transform.localPosition = new Vector3(x,
 				parent.transform.localPosition.y, parent.transform.localPosition.z);
 			// Handle fades out as the menu comes in, relative to menu position.

@@ -72,9 +72,26 @@ public class UnitParent : MonoBehaviour {
 		return children;
 	}
 
-	public void killSelectedTrees(float wait, float speed) {
+	public void CutDownUnit(float cutTime) {
 		setSelected(false);
-		StartCoroutine(RespawnTrees(wait, speed));
+		StartCoroutine(RespawnTrees(cutTime, 1 / (growbackFactor * 4f * 5f)));
+		if (cutTime == GameData.workerCutTime) {
+			if (growbackFactor > 1f) {
+				growbackFactor -= 0.35f;
+			} else if (growbackFactor > 0.5f) {
+				growbackFactor -= 0.17f;
+			}
+		} else if (cutTime == GameData.machineCutTime) {
+			if (growbackFactor < 2f) {
+				growbackFactor = Mathf.Lerp(growbackFactor, 2f, 0.5f);
+			}
+		} else if (cutTime == GameData.teamCutTime) {
+			if (growbackFactor < 1.5f) {
+				growbackFactor *= 2f;
+			} else {
+				growbackFactor = 3f;
+			}
+		}
 	}
 
 	void Update() {
@@ -114,7 +131,7 @@ public class UnitParent : MonoBehaviour {
 				go.transform.localScale = Vector3.one * scale;
 			}
 			scale += speed;
-			yield return new WaitForSeconds(Time.deltaTime);
+			yield return new WaitForSeconds(0.25f);
 		}
 		foreach (GameObject go in children) {
 			go.isStatic = true;

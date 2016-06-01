@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameData : MonoBehaviour {
 
+	private float SECONDS_PER_DAY = 10f;
+
 	private List<UnitParent> selectedParents;
 	private CutSelectionPopout cutPopout;
 	private int woodCutCount;
@@ -22,7 +24,16 @@ public class GameData : MonoBehaviour {
 	public float treeGrowbackWaitTime;
 	public float treeGrowbackSpeed;
 
+	public float defaultGrowthRate;
+	public static float workerCutTime;
+	public static float machineCutTime;
+	public static float teamCutTime;
+
 	void Start () {
+		defaultGrowthRate = 5f * SECONDS_PER_DAY;
+		workerCutTime = 3f * SECONDS_PER_DAY;
+		machineCutTime = 1f * SECONDS_PER_DAY;
+		teamCutTime = 0.5f * SECONDS_PER_DAY;
 		currentQuota = quotas[0];
 		woodCutCount = 0;
 		money = 3000;
@@ -86,25 +97,49 @@ public class GameData : MonoBehaviour {
 		return selectedParents;
 	}
 
-	public void killSelectedTrees() {
+	public void CutTrees_Worker() {
 		int c = selectedParents.Count;
 		int wood = 0;
 		int muns = 0;
 		for (int i = 0; i < c; i++) {
 			UnitParent up = selectedParents[0];
 			RemoveParentFromSelected(up);
-			up.killSelectedTrees(treeGrowbackWaitTime, treeGrowbackSpeed/100);
+			up.CutDownUnit(workerCutTime);
 			wood += 10;
 			muns += 50;
 		}
-
 		AddToWoodCount(wood);
 		AddMoney(muns);
 	}
 
-	public void HalfTest() {
-		woodCutCount += 5;
-		UpdateWoodCount();
+	public void CutTrees_Machine() {
+		int c = selectedParents.Count;
+		int wood = 0;
+		int muns = 0;
+		for (int i = 0; i < c; i++) {
+			UnitParent up = selectedParents[0];
+			RemoveParentFromSelected(up);
+			up.CutDownUnit(machineCutTime);
+			wood += 10;
+			muns += 50;
+		}
+		AddToWoodCount(wood);
+		AddMoney(muns);
+	}
+
+	public void CutTrees_Team() {
+		int c = selectedParents.Count;
+		int wood = 0;
+		int muns = 0;
+		for (int i = 0; i < c; i++) {
+			UnitParent up = selectedParents[0];
+			RemoveParentFromSelected(up);
+			up.CutDownUnit(teamCutTime);
+			wood += 10;
+			muns += 50;
+		}
+		AddToWoodCount(wood);
+		AddMoney(muns);
 	}
 
 	private void UpdateCutButton() {
@@ -140,7 +175,7 @@ public class GameData : MonoBehaviour {
 			GameObject.Find("DayCount").GetComponent<Text>().text = days.ToString();
 			GameObject.Find("DayLeftCount").GetComponent<Text>().text = daysLeft.ToString();
 			GameObject.Find("WoodQuotaCount").GetComponent<Text>().text = currentQuota.ToString();
-			yield return new WaitForSeconds(10f);
+			yield return new WaitForSeconds(SECONDS_PER_DAY);
 			days += 1;
 			daysLeft = 30 - (days%30);
 			if (daysLeft == 30) {
