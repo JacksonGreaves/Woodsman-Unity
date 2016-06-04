@@ -4,15 +4,17 @@ using System.Collections;
 
 public class CutSelectionButtonsPopout : MonoBehaviour {
 
+	public GameObject mask;
+	public GameObject pauseButton;
+
 	private bool isPoppedOut;
-	private Vector2 startingPos;
-	private float popoutY = 64f; // Destination Y - change if UI elements get moved around!
+	private float posStart;
+	private float posEnd;
 
 	void Start () {
 		isPoppedOut = false;
-		// StatsPopout did this by specifying a parent and getting its x value,
-		// but in hindsight, it's an unnecessary step.
-		startingPos = new Vector2(gameObject.transform.localPosition.x, gameObject.transform.localPosition.y);
+		posStart = GetComponent<RectTransform>().anchoredPosition.y;
+		posEnd = posStart - mask.GetComponent<RectTransform>().sizeDelta.y + pauseButton.GetComponent<RectTransform>().sizeDelta.y;
 	}
 
 	public void SetSelection(bool b) {
@@ -33,11 +35,12 @@ public class CutSelectionButtonsPopout : MonoBehaviour {
 
 	private IEnumerator ShowCoroutine() {
 		StopCoroutine(HideCoroutine());
-		//GameObject.Find("CutSelectionMask").GetComponent<Image>().raycastTarget = true;
-		while (gameObject.transform.localPosition.y > popoutY + 0.05f && isPoppedOut) {
-			float y = Mathf.Lerp(gameObject.transform.localPosition.y, popoutY, 0.2f);
-			gameObject.transform.localPosition = new Vector3(gameObject.transform.localPosition.x,
-				y, gameObject.transform.localPosition.z);
+
+		RectTransform rect = GetComponent<RectTransform>();
+
+		while (rect.anchoredPosition.y > posEnd + 0.05f && isPoppedOut) {
+			float y = Mathf.Lerp(rect.anchoredPosition.y, posEnd, 0.2f);
+			rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, y);
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
 		yield return new WaitForSeconds(0f);
@@ -45,11 +48,12 @@ public class CutSelectionButtonsPopout : MonoBehaviour {
 
 	private IEnumerator HideCoroutine() {
 		StopCoroutine(ShowCoroutine());
-		//GameObject.Find("CutSelectionMask").GetComponent<Image>().raycastTarget = false;
-		while (gameObject.transform.localPosition.y < startingPos.y - 0.05f && !isPoppedOut) {
-			float y = Mathf.Lerp(gameObject.transform.localPosition.y, startingPos.y, 0.2f);
-			gameObject.transform.localPosition = new Vector3(gameObject.transform.localPosition.x,
-				y, gameObject.transform.localPosition.z);
+
+		RectTransform rect = GetComponent<RectTransform>();
+
+		while (rect.anchoredPosition.y < posStart - 0.05f && !isPoppedOut) {
+			float y = Mathf.Lerp(rect.anchoredPosition.y, posStart, 0.2f);
+			rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, y);
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
 		yield return new WaitForSeconds(0f);

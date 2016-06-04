@@ -51,21 +51,23 @@ public class CameraController : MonoBehaviour {
 		// to be tilted as well.
 		// Yrot = 0 degrees : forward is (0, 0, 1)
 		// Yrot = 45 degrees: forward is (1, 0, 1)
-		if (Input.GetKey(KeyCode.W)) {
+		if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
 			handleMovement(new Vector3(1f, 0f, 1f));
 		}
-		if (Input.GetKey(KeyCode.A)) {
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
 			handleMovement(new Vector3(-1f, 0f, 1f));
 		}
-		if (Input.GetKey(KeyCode.S)) {
+		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
 			handleMovement(new Vector3(-1f, 0f, -1f));
 		}
-		if (Input.GetKey(KeyCode.D)) {
+		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
 			handleMovement(new Vector3(1f, 0f, -1f));
 		}
 
-		if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A) &&
-			!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D)) {
+		if (!(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) &&
+			!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) &&
+			!(Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) &&
+			!(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))) {
 			rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 0.2f);
 			rb.angularVelocity = Vector3.zero;
 		}
@@ -141,7 +143,6 @@ public class CameraController : MonoBehaviour {
 				if (point > highestPoint)
 					highestPoint = point;
 			}
-			
 		}
 		return highestPoint;
 		

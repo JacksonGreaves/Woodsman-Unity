@@ -8,7 +8,6 @@ public class UnitParent : MonoBehaviour {
 	private bool isSelected;
 	public Unit unit;
 
-
 	private bool canBeSelected;
 	private bool areTreesSick;
 
@@ -111,9 +110,22 @@ public class UnitParent : MonoBehaviour {
 					if (!Input.GetKey(KeyCode.LeftShift) && isSelected) {
 						setSelected(false);
 						data.RemoveParentFromSelected(GetComponent<UnitParent>());
+						// When clicking on a tree then clicking on BG trees,
+						// the UI isn't reset. This coroutine waits a frame
+						// and checks if the selection count is 0, and if so,
+						// calls the reset function.
+						StartCoroutine(CheckSelected());
 					}
 				}
 			}
+		}
+	}
+
+	private IEnumerator CheckSelected() {
+		// Data passed around will take some time to settle, so wait a frame
+		yield return new WaitForSeconds(Time.deltaTime);
+		if (data.GetSelectedParentsAsList().Count == 0) {
+			data.ResetSelectedParents();
 		}
 	}
 

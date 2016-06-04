@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameData : MonoBehaviour {
 
+	private bool gamePaused;
+
 	private float SECONDS_PER_DAY = 10f;
 
 	private List<UnitParent> selectedParents;
@@ -14,6 +16,8 @@ public class GameData : MonoBehaviour {
 	private int days;
 	private int daysLeft;
 	private int currentQuota;
+	
+	// Heads-up: 1 hour of gameplay = 12 quotas
 	private List<int> quotas = new List<int> {	250, 300, 350, 400, 500,
 												600, 700, 800, 900, 1000,
 												1100, 1200, 1300, 1350, 1450,
@@ -21,16 +25,11 @@ public class GameData : MonoBehaviour {
 												1900, 2000, 2200, 2300, 2400,
 												2450, 2500	};
 
-	public float treeGrowbackWaitTime;
-	public float treeGrowbackSpeed;
-
-	public float defaultGrowthRate;
 	public static float workerCutTime;
 	public static float machineCutTime;
 	public static float teamCutTime;
 
 	void Start () {
-		defaultGrowthRate = 5f * SECONDS_PER_DAY;
 		workerCutTime = 3f * SECONDS_PER_DAY;
 		machineCutTime = 1f * SECONDS_PER_DAY;
 		teamCutTime = 0.5f * SECONDS_PER_DAY;
@@ -98,48 +97,86 @@ public class GameData : MonoBehaviour {
 	}
 
 	public void CutTrees_Worker() {
-		int c = selectedParents.Count;
-		int wood = 0;
-		int muns = 0;
-		for (int i = 0; i < c; i++) {
-			UnitParent up = selectedParents[0];
-			RemoveParentFromSelected(up);
-			up.CutDownUnit(workerCutTime);
-			wood += 10;
-			muns += 50;
-		}
-		AddToWoodCount(wood);
-		AddMoney(muns);
+		Cut(10, 50, workerCutTime, "sawing");
 	}
 
 	public void CutTrees_Machine() {
-		int c = selectedParents.Count;
-		int wood = 0;
-		int muns = 0;
-		for (int i = 0; i < c; i++) {
-			UnitParent up = selectedParents[0];
-			RemoveParentFromSelected(up);
-			up.CutDownUnit(machineCutTime);
-			wood += 10;
-			muns += 50;
-		}
-		AddToWoodCount(wood);
-		AddMoney(muns);
+		Cut(10, 50, machineCutTime, "machinery");
 	}
 
 	public void CutTrees_Team() {
+		Cut(10, 50, teamCutTime, "team");
+	}
+
+	public void Game_TogglePause() {
+		Game_PauseResume(!gamePaused);
+	}
+
+	public void Game_PauseResume(bool pause) {
+		gamePaused = pause;
+
+		if (gamePaused) {
+			Time.timeScale = 0f;
+		} else {
+			Time.timeScale = 1f;
+		}
+	}
+
+	public void Game_Exit() {
+		Application.Quit();
+	}
+
+	private void Cut(int woodPrice, int munsPrice, float time, string sound) {
 		int c = selectedParents.Count;
 		int wood = 0;
 		int muns = 0;
+
+		float audioXMin = 100f;
+		float audioZMin = 100f;
+		float audioXMax = 0f;
+		float audioZMax = 0f;
+
 		for (int i = 0; i < c; i++) {
 			UnitParent up = selectedParents[0];
+			if (audioXMin > up.transform.position.x) {
+				audioXMin = up.transform.position.x;
+			}
+			if (audioXMax < up.transform.position.x + up.unit.getSize().x) {
+				audioXMax = up.transform.position.x + up.unit.getSize().x;
+			}
+			if (audioZMin > up.transform.position.z) {
+				audioZMin = up.transform.position.z;
+			}
+			if (audioZMax < up.transform.position.z + up.unit.getSize().y) {
+				audioZMax = up.transform.position.z + up.unit.getSize().y;
+			}
 			RemoveParentFromSelected(up);
-			up.CutDownUnit(teamCutTime);
-			wood += 10;
-			muns += 50;
+			up.CutDownUnit(time);
+			wood += woodPrice;
+			muns += munsPrice;
 		}
+
 		AddToWoodCount(wood);
 		AddMoney(muns);
+
+		float audioX = (audioXMin + audioXMax) / 2;
+		float audioZ = (audioZMin + audioZMax) / 2;
+
+		GameObject go = (GameObject) Instantiate(Resources.Load("CuttingAudio"),
+			new Vector3(audioX, Terrain.activeTerrain.SampleHeight(new Vector3(audioX, 100f, audioZ)), audioZ),
+			Quaternion.Euler(Vector3.forward));
+
+		AudioSource a = go.GetComponent<AudioSource>();
+		a.clip = (AudioClip) Resources.Load(sound);
+		if (sound == "machinery")
+			a.volume -= 0.4f;
+		a.Play();
+		if (sound == "team") {
+			// Let the Team cutting sound go on for its length
+			GameObject.Destroy(go, a.clip.length);
+		} else {
+			GameObject.Destroy(go, time);
+		}
 	}
 
 	private void UpdateCutButton() {

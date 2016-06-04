@@ -11,12 +11,14 @@ public class StatsPopout : MonoBehaviour {
 
 	private bool isMouseOver;
 	private float posStart;
+	private float posEnd;
 	private float handleAlpha;
 
 	void Start () {
 		handleAlpha = 1f; // No opacity
 		isMouseOver = false;
-		posStart = parent.transform.localPosition.x;
+		posStart = parent.GetComponent<RectTransform>().anchoredPosition.x;
+		posEnd = GetComponent<RectTransform>().sizeDelta.x - handle.GetComponent<RectTransform>().sizeDelta.x;
 	}
 	
 	public void EnterPanel() {
@@ -31,7 +33,7 @@ public class StatsPopout : MonoBehaviour {
 
 	private void HandleColor(float x) {
 		// Get the opacity ratio
-		handleAlpha = Mathf.Abs(x/posStart);
+		handleAlpha = Mathf.Abs((posStart+posEnd-x)/posEnd);
 		// Change handle opacity
 		handle.GetComponent<Image>().color = new Color(
 			handle.GetComponent<Image>().color.r,
@@ -59,12 +61,14 @@ public class StatsPopout : MonoBehaviour {
 	private IEnumerator EnterCoroutine() {
 		// Ensure the opposite routine isn't running
 		StopCoroutine(ExitCoroutine());
-		while (parent.transform.localPosition.x < 5-0.05f && isMouseOver) {
+
+		RectTransform p = parent.GetComponent<RectTransform>();
+
+		while (p.anchoredPosition.x < posStart + posEnd - 0.05f && isMouseOver) {
 			// Loop stops when end position is close to 0 or if mouse leaves
 			// Position is smoothed (interpolated) for effect
-			float x = Mathf.Lerp(parent.transform.localPosition.x, 5f, 0.2f);
-			parent.transform.localPosition = new Vector3(x,
-				parent.transform.localPosition.y, parent.transform.localPosition.z);
+			float x = Mathf.Lerp(p.anchoredPosition.x, posStart + posEnd, 0.2f);
+			p.anchoredPosition = new Vector2(x, p.anchoredPosition.y);
 			// Handle fades out as the menu comes in, relative to menu position.
 			HandleColor(x);
 			// Delay keeps the visuals working
@@ -76,10 +80,14 @@ public class StatsPopout : MonoBehaviour {
 	private IEnumerator ExitCoroutine() {
 		// Same as EnterRoutine, except position is different and loop ends on mouse enter.
 		StopCoroutine(EnterCoroutine());
-		while (parent.transform.localPosition.x > posStart+0.05f && !isMouseOver) {
-			float x = Mathf.Lerp(parent.transform.localPosition.x, posStart, 0.2f);
-			parent.transform.localPosition = new Vector3(x,
-				parent.transform.localPosition.y, parent.transform.localPosition.z);
+
+		RectTransform p = parent.GetComponent<RectTransform>();
+
+		while (p.anchoredPosition.x > posStart + 0.05f && !isMouseOver) {
+			float x = Mathf.Lerp(p.anchoredPosition.x, posStart, 0.2f);
+			p.anchoredPosition = new Vector2(x, p.anchoredPosition.y);
+			//parent.transform.localPosition = new Vector3(x,
+			//	parent.transform.localPosition.y, parent.transform.localPosition.z);
 			HandleColor(x);
 			yield return new WaitForSeconds(Time.deltaTime);
 		}
