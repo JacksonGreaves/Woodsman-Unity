@@ -74,28 +74,11 @@ public class UnitParent : MonoBehaviour {
 	public void CutDownUnit(float cutTime) {
 		setSelected(false);
 		StartCoroutine(RespawnTrees(cutTime, 1 / (growbackFactor * 4f * 5f)));
-		if (cutTime == GameData.workerCutTime) {
-			if (growbackFactor > 1f) {
-				growbackFactor -= 0.35f;
-			} else if (growbackFactor > 0.5f) {
-				growbackFactor -= 0.17f;
-			}
-		} else if (cutTime == GameData.machineCutTime) {
-			if (growbackFactor < 2f) {
-				growbackFactor = Mathf.Lerp(growbackFactor, 2f, 0.5f);
-			}
-		} else if (cutTime == GameData.teamCutTime) {
-			if (growbackFactor < 1.5f) {
-				growbackFactor *= 2f;
-			} else {
-				growbackFactor = 3f;
-			}
-		}
 	}
 
 	void Update() {
 		if (canBeSelected && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
-			if (Input.GetMouseButton(0)) {
+			if (Camera.main.GetComponent<CameraController>().canClick && Input.GetMouseButton(0)) {
 				var camx = Camera.main.GetComponent<CameraController>().point.x;
 				var camy = Camera.main.GetComponent<CameraController>().point.z;
 				var px = transform.position.x;
@@ -137,6 +120,28 @@ public class UnitParent : MonoBehaviour {
 			changeMaterials(matGrowing, matGrowing);
 		}
 		yield return new WaitForSeconds(wait);
+
+		if (wait == GameData.workerCutTime) {
+			if (growbackFactor > 1f) {
+				growbackFactor -= 0.35f;
+			} else if (growbackFactor > 0.5f) {
+				growbackFactor -= 0.17f;
+			}
+			data.SetWorkerCount(data.GetWorkerCount() + 1);
+		} else if (wait == GameData.machineCutTime) {
+			if (growbackFactor < 2f) {
+				growbackFactor = Mathf.Lerp(growbackFactor, 2f, 0.5f);
+			}
+			data.SetMachineCount(data.GetMachineCount() + 1);
+		} else if (wait == GameData.teamCutTime) {
+			if (growbackFactor < 1.5f) {
+				growbackFactor *= 2f;
+			} else {
+				growbackFactor = 3f;
+			}
+			data.SetTeamCount(data.GetTeamCount() + 1);
+		}
+
 		float scale = 0f;
 		while (scale < 1f) {
 			foreach (GameObject go in children) {

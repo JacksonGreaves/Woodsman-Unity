@@ -61,6 +61,10 @@ public class GameGeneration : MonoBehaviour {
 		Instantiate(Resources.Load("Cloud"));
 		Instantiate(Resources.Load("Cloud"));
 
+
+		Tutorial tut = GameObject.Find("StartupTutorialHandler").GetComponent<Tutorial>();
+		tut.StartTutorial();
+
 		// It is not necessary to de-activate this object, but it seems better to
 		// de-activate objects that aren't used anymore, rather than leave them idle.
 		gameObject.SetActive(false);

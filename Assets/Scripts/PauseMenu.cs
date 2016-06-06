@@ -5,6 +5,7 @@ using System.Collections;
 public class PauseMenu : MonoBehaviour {
 
 	public GameObject blackScreen;
+	public bool isEnabled;
 
 	private bool isShowing;
 
@@ -29,6 +30,14 @@ public class PauseMenu : MonoBehaviour {
 		} else {
 			GetComponent<RectTransform>().anchoredPosition = offScreen;
 			blackScreen.SetActive(false);
+		}
+	}
+
+	void Update() {
+		if (isEnabled) {
+			GameObject.Find("PauseButton").GetComponent<Button>().interactable = true;
+		} else {
+			GameObject.Find("PauseButton").GetComponent<Button>().interactable = false;
 		}
 	}
 }

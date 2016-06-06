@@ -29,6 +29,10 @@ public class GameData : MonoBehaviour {
 	public static float machineCutTime;
 	public static float teamCutTime;
 
+	private int workerCount;
+	private int machineCount;
+	private int teamCount;
+
 	void Start () {
 		workerCutTime = 3f * SECONDS_PER_DAY;
 		machineCutTime = 1f * SECONDS_PER_DAY;
@@ -38,20 +42,26 @@ public class GameData : MonoBehaviour {
 		money = 3000;
 		days = 0;
 		daysLeft = 30;
+		workerCount = 2;
+		machineCount = 0;
+		teamCount = 0;
 		selectedParents = new List<UnitParent>();
 		cutPopout = GameObject.Find("CutSelection").GetComponent<CutSelectionPopout>();
 		StartCoroutine(DayCounter());
 		UpdateWoodCount();
 		UpdateMoneyCount();
+		UpdateUnitCount();
 	}
 
 	public void AddParentToSelected(UnitParent parent) {
 		selectedParents.Add(parent);
 		UpdateCutButton();
+		UpdateUnitCount();
 	}
 
 	public void RemoveParentFromSelected(UnitParent parent) {
 		selectedParents.Remove(parent);
+		UpdateUnitCount();
 	}
 
 	public void ResetSelectedParents() {
@@ -126,8 +136,70 @@ public class GameData : MonoBehaviour {
 		Application.Quit();
 	}
 
+	public void SetWorkerCount(int c) {
+		workerCount = c;
+		UpdateUnitCount();
+	}
+
+	public int GetWorkerCount() {
+		return workerCount;
+	}
+
+	public void SetMachineCount(int c) {
+		machineCount = c;
+		UpdateUnitCount();
+	}
+
+	public int GetMachineCount() {
+		return machineCount;
+	}
+
+	public void SetTeamCount(int c) {
+		teamCount = c;
+		UpdateUnitCount();
+	}
+
+	public int GetTeamCount() {
+		return teamCount;
+	}
+
+	public void PurchaseWorker() {
+		if (money >= 1000) {
+			money -= 1000;
+			workerCount += 1;
+		}
+		UpdateMoneyCount();
+	}
+
+	public void PurchaseMachine() {
+		if (money >= 4000) {
+			money -= 4000;
+			machineCount += 1;
+		}
+		UpdateMoneyCount();
+	}
+
+	public void PurchaseTeam() {
+		if (money >= 10000) {
+			money -= 10000;
+			teamCount += 1;
+		}
+		UpdateMoneyCount();
+	}
+
 	private void Cut(int woodPrice, int munsPrice, float time, string sound) {
 		int c = selectedParents.Count;
+
+		if (sound == "sawing") {
+			workerCount -= c;
+		} else if (sound == "machinery") {
+			machineCount -= c;
+		} else if (sound == "team") {
+			teamCount -= c;
+		}
+
+		UpdateUnitCount();
+
 		int wood = 0;
 		int muns = 0;
 
@@ -195,6 +267,20 @@ public class GameData : MonoBehaviour {
 	private void UpdateMoneyCount() {
 		Text t = GameObject.Find("MoneyCount").GetComponent<Text>();
 		t.text = money.ToString();
+	}
+
+	private void UpdateUnitCount() {
+		Text worker = GameObject.Find("WorkerButton").GetComponentInChildren<Text>();
+		Text machine = GameObject.Find("MachineButton").GetComponentInChildren<Text>();
+		Text team = GameObject.Find("TeamButton").GetComponentInChildren<Text>();
+
+		worker.text = string.Format("Worker Unit ({0})", workerCount);
+		machine.text = string.Format("The Katt Unit ({0})", machineCount);
+		team.text = string.Format("The Team Unit ({0})", teamCount);
+
+		GameObject.Find("WorkerButton").GetComponent<Button>().interactable = (selectedParents.Count <= workerCount);
+		GameObject.Find("MachineButton").GetComponent<Button>().interactable = (selectedParents.Count <= machineCount);
+		GameObject.Find("TeamButton").GetComponent<Button>().interactable = (selectedParents.Count <= teamCount);
 	}
 
 	private void triggerQuota() {

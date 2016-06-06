@@ -9,6 +9,8 @@ public class CameraController : MonoBehaviour {
 	public float posz;
 	public float rotx;
 
+	public bool canClick;
+
 	public Vector3 point;
 
 	private Rigidbody rb;
@@ -37,7 +39,7 @@ public class CameraController : MonoBehaviour {
 	private IEnumerator LateStart() {
 		// Camera must start after terrain generation since it samples the terrain height
 		// at its starting point to figure out its initial Y position.
-		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForSeconds(0f);
 		highestTerrainY = GetTerrainHighestPoint();
 		transform.position = new Vector3(posx, highestTerrainY + posy, posz);
 		// Gimbal lock won't be an issue, so it's easier to deal with euler Vec3's here.
@@ -110,11 +112,13 @@ public class CameraController : MonoBehaviour {
 			rb.velocity = Vector3.zero;
 		}
 
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
-		if (Input.GetMouseButton(0)) {
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity, lm.value)) {
-				point = hit.point;
+		if (canClick) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if (Input.GetMouseButton(0)) {
+				if (Physics.Raycast(ray, out hit, Mathf.Infinity, lm.value)) {
+					point = hit.point;
+				}
 			}
 		}
 	}
